@@ -29,24 +29,32 @@ nc 127.0.0.1 10037
 ### 声明与接口类
 ### 时间相关类
 时间相关主要有三个类别Timestamp时间戳类，Timer定时器类，TimerQueue定时器队列   
-Timestamp时间戳类 采取了六十四位的int数据来储存时间，实现了获取当前时间，时间比较判断时间是否有效的方法。  
-Timer是定时器类
+**1.Timestamp时间戳类** 采取了六十四位的int数据来储存时间，实现了获取当前时间，时间比较判断时间是否有效的方法。  
+**2.Timer是定时器类**
 
 ### 条件变量锁相关类
 条件变量和锁主要有四个类别MutexLock互斥量,MutexLockGuard互斥量实例RAII,Condition条件变量类,BlockQueue无界的缓冲区  
-MutexLock互斥量：  
- 由于我们是线程来执行任务的，我们的互斥量内部采用的是pthread_mutex类别的  
- 构造函数调用pthread_mutex_init,析构函数调用pthread_mutex__destory  
- 在其内部lock与unlock 分别调用pthread_lock/unlock  
-MutexLockGuard互斥量实例：  
- 采取的是RAII封装技法，在MutexLockGuard类中包含了一个Mutex对象  
- 在构造时进行创建加锁，在析构时自动解锁推出  
-Condition条件变量类：  
- 条件变量类内部也维护了一个pthread_cond_it也自动的调用内部的互斥量进行wakeup和signal操作  
-BlockQueue无界的缓冲区：
- 无界缓存区类则是完全的模拟了生产者和消费者的模型，put和take方法打配内部的条件变量，  
- 当缓冲区为空的时候不能进行take操作wait阻塞线程，当put放置任务时signal唤醒线程   
+**1.MutexLock互斥量：**  
+由于我们是线程来执行任务的，我们的互斥量内部采用的是pthread_mutex类别的  
+构造函数调用pthread_mutex_init,析构函数调用pthread_mutex__destory  
+在其内部lock与unlock 分别调用pthread_lock/unlock  
+**2.MutexLockGuard互斥量实例：**  
+采取的是RAII封装技法，在MutexLockGuard类中包含了一个Mutex对象  
+在构造时进行创建加锁，在析构时自动解锁推出  
+**3.Condition条件变量类：**   
+条件变量类内部也维护了一个pthread_cond_it也自动的调用内部的互斥量进行wakeup和signal操作  
+**4.BlockQueue无界的缓冲区：**
+无界缓存区类则是完全的模拟了生产者和消费者的模型，put和take方法打配内部的条件变量，  
+当缓冲区为空的时候不能进行take操作wait阻塞线程，当put放置任务时signal唤醒线程   
 ### 任务线程类
+任务和线程类主要有以下的三种类别Task任务类,Thread线程类,ThreadPool线程池类  
+**1.Task任务类：**  
+重载了两个构造函数，模拟了读写过程锁执行的两种任务  
+**2.Thread线程类：**  
+完成了pthread_create的创建线程并执行任务的功能，还提供了获取tid的方法  
+**3.ThreadPool线程池类：**  
+内部有一个队列任务池和一个vector线程池，threadpool进行start方法后线程就会到任务池区领取任务并执行  
 ### Reactor三剑客类
+Reactor模式在本项目的实现主要由三个类来实现，
 ### 接受与连接类
 ### 终端服务器类
